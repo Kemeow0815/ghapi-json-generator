@@ -2,42 +2,42 @@ name: Generator
 
 # 👇 添加这个权限配置块
 permissions:
-  contents: write      # 允许推送代码
-  pull-requests: write # 如果需要创建PR
+    contents: write # 允许推送代码
+    pull-requests: write # 如果需要创建PR
 
 on:
-  push:
-    branches:
-      - main
-  watch:
-    types: [started]
-  schedule:
-    - cron: '0 * * * *'
+    push:
+        branches:
+            - main
+    watch:
+        types: [ started ]
+    schedule:
+        - cron: "0 * * * *"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.x
-    - name: Install requirements
-      run: |
-        pip install -r requirements.txt
-    - name: Run Generator
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
-      run: |
-        python generator/v2.py
-    - name: Commit & Push
-      uses: action-x/commit@v2.9
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        push-branch: 'output'
-        commit-message: 'Generate Json'
-        force-push: 'true'
-        name: github-actions[bot]
-        email: github-actions[bot]@noreply.github.com
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: 3.x
+            - name: Install requirements
+              run: |
+                  pip install -r requirements.txt
+            - name: Run Generator
+              env:
+                  GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} # 使用 Personal Access Token 访问其他仓库的 issues
+              run: |
+                  python generator/v2.py
+            - name: Commit & Push
+              uses: action-x/commit@v2.9
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  push-branch: "output"
+                  commit-message: "Generate Json"
+                  force-push: "true"
+                  name: github-actions[bot]
+                  email: github-actions[bot]@noreply.github.com
